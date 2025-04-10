@@ -1,7 +1,6 @@
-const { Query } = require("mongoose");
 const User = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
+
 const userResolvers = {
   Query: {
     getAllUsers: async () => {
@@ -13,36 +12,35 @@ const userResolvers = {
     },
   },
   Mutation: {
-    signUp: async (_, args, context) => {
-      // Corrected spelling
+    signUp: async (_, args) => {
       try {
         const { input } = args;
         const { fullName, email, telephone, password } = input;
 
-        console.log("Here is what you want to create: ", input);
+        console.log("📩 Incoming signup request:", input);
 
-        //Let us first check if the user is already exist in the database
-
+        // Check if user already exists
         const checkExistingUser = await User.findOne({ email });
         if (checkExistingUser) {
-          throw new Error(
-            `The user with this email:${email} is Already Exist !`
-          );
+          throw new Error(`A user with the email ${email} already exists.`);
         }
-        //let us encript the password
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 12);
-        //let us construct new user and insert into the database
+
+        // Save the new user
         const newUser = new User({
           fullName,
           email,
           telephone,
           password: hashedPassword,
         });
+
         const result = await newUser.save();
-        console.log("New User that have been saved is:", result);
+        console.log("✅ New user saved:", result);
         return result;
       } catch (error) {
-        console.error(error);
+        console.error("❌ Error in signUp:", error);
         throw new Error(error.message || "An unknown error occurred.");
       }
     },

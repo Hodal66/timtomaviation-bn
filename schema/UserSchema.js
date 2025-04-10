@@ -1,4 +1,5 @@
-const { gql } = require("apollo-server");
+// const { gql } = require("apollo-server");
+const { gql } = require("apollo-server-express");
 
 const userSchema = gql`
   input UserInput {

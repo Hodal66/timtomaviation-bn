@@ -12,7 +12,6 @@ const contactUsSchema = new mongoose.Schema({
   },
   telephone: {
     type: String,
-    required: true,
   },
   message: {
     type: String,
